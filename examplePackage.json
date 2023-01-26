@@ -1,0 +1,11 @@
+{
+  "Name": "Example QC Package",
+  "Description": "A description of this package",
+  "Author": "SomeGuy",
+  "Package Location": "",
+  "Get Methord": "wget/curl/git clone",
+  "Type": "Install/Run/UI/Ext",
+  "Script Type": "",
+  "Script": ".sh/.py",
+  "Can Run At Startup": True,
+}

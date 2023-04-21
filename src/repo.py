@@ -1,5 +1,6 @@
 import urllib, json, subprocess, requests
 from pathlib import Path
+
 class Repo:
         def __init__(self, url):
                 self.url = url
@@ -31,8 +32,9 @@ class Package:
         def __init__(self, repoURL, jsonFile):
                 self.url = repoURL + jsonFile
                 self.downloaded = False
-                file = urllib.urlopen(self.url)
-                self.json = json.load(file)
+                file = requests.get(self.url)
+                text = str(file.text)
+                self.json = json.loads(text)
                 file.close()
                 self.name = self.json["Name"]
                 self.Identifier = self.json["Identifier"]
@@ -43,15 +45,11 @@ class Package:
                 self.Script = self.json["Script"]
                 self.AllowedInstallTypes = self.json["AllowedInstallTypes"]
                 self.FileType = self.json["FileType"]
+                self.args = []
 
         def download(self):
-                file = urllib.urlopen(self.PackageLocation)
-                save = open("Cache/" + self.Identifier + "." + self.FileType, "w")
-                save.write(file)
+                file = requests.get(self.PackageLocation)
+                save = open("cache/" + self.Identifier + "." + self.FileType, "wb")
+                save.write(file.content)
                 file.close()
                 save.close()
-
-file = requests.get("https://raw.githubusercontent.com/BlackIQ/Hello-World/main/Python/examples/python.py")
-save = Path("helloWords.py")
-save.write_bytes(file.content)
-file.close()

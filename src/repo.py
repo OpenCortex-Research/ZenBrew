@@ -1,32 +1,48 @@
 import urllib, json, subprocess, requests
-from pathlib import Path
+from fuzzywuzzy import fuzz
+with open("/OpenCortex/ZenBrew/settings.json") as jsonfile:
+        settings = json.load(jsonfile)
+
+def fuzzSort(fuzzList):
+        return fuzzList[0]
 
 class Repo:
         def __init__(self, url):
                 self.url = url
-                self.downloaded = False
-                file = urllib.urlopen(self.url + "repo.json")
-                self.json = json.load(file)
+                file = requests.get(self.url + "repo.json")
+                self.json = json.loads(str(file.text))
                 file.close()
                 self.name = self.json["Name"]
                 self.format = self.json["Format"]
                 self.packageFile = self.json["Packages"]
-        
-        def downloadPackagesList(self):
-                pass
+                self.packages = []
+                packageCSV = str(requests.get(self.url + self.packageFile).text)
+                packageCSV = packageCSV.split('\n')
+                packageCSV.pop(0)
+                for i in range(len(packageCSV)):
+                        if packageCSV[i] == '': break
+                        else:
+                                packageCSV[i] = packageCSV[i].split(', ')
+                                self.packages.append(Package(self.url, packageCSV[i][0]))
 
-class LocalRepo(Repo):
-        def __init__(self, path):
-                self.downloaded = True
-                file = open(self.path + "repo.json")
-                self.json = json.load(file)
-                file.close()
-                self.name = self.json["Name"]
-                self.format = self.json["Format"]
-                self.packageFile = self.json["Packages"]
+        def searchPackages(self, searcTerm):
+                searchFuzz = []
+                for i in self.packages:
+                        if fuzz.ratio(searcTerm.lower(), i.Identifier.lower()) >= 0.8:
+                                searchFuzz.append([fuzz.ratio(searcTerm, i.Identifier), i.Identifier])
+                searchFuzz.sort(key=fuzzSort, reverse=True)
+                return (searchFuzz[0:10])
+
+        def getPackageInfo(self, package, info):
+                for i in self.packages:
+                        if i.Identifier == package:
+                                return i.json[info]
         
-        def downloadPackagesList(self):
-                pass
+        def packageMatch(self, package):
+                for i in self.packages:
+                        if i.Identifier == package:
+                                return i
+                return False
 
 class Package:
         def __init__(self, repoURL, jsonFile):
@@ -36,20 +52,18 @@ class Package:
                 text = str(file.text)
                 self.json = json.loads(text)
                 file.close()
-                self.name = self.json["Name"]
                 self.Identifier = self.json["Identifier"]
-                self.Description = self.json["Description"]
-                self.Author = self.json["Author"]
+                self.Script = self.json["Script"]
+                self.FileType = self.json["FileType"]
                 self.PackageLocation = self.json["Package Location"]
                 self.Type = self.json["Type"]
-                self.Script = self.json["Script"]
-                self.AllowedInstallTypes = self.json["AllowedInstallTypes"]
-                self.FileType = self.json["FileType"]
-                self.args = []
 
         def download(self):
                 file = requests.get(self.PackageLocation)
-                save = open("cache/" + self.Identifier + "." + self.FileType, "wb")
+                save = open(settings["zenBrewDir"] + "cache/" + self.Identifier + "." + self.FileType, "wb")
                 save.write(file.content)
                 file.close()
                 save.close()
+
+testRepo = Repo("https://zen.judahfuller.com/repo/")
+testRepo.searchPackages("Test py")

@@ -1,6 +1,6 @@
-import urllib, json, subprocess, requests
+import json, requests
 from fuzzywuzzy import fuzz
-with open("/OpenCortex/ZenBrew/settings.json") as jsonfile:
+with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 def fuzzSort(fuzzList):

@@ -1,7 +1,7 @@
 import argparse, json, sys
 from repo import Repo
 from install import installPackahe
-with open("../settings.json") as jsonfile:
+with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,)

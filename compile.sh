@@ -1,1 +1,0 @@
-python3 -m nuitka --follow-imports --onefile src/main.py

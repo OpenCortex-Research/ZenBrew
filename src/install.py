@@ -16,7 +16,7 @@ def installPackahe(package: Package):
         packagesList.close()
         if package.Type == "DirectRun":
                 if package.FileType == "py": exec(open(settings["zenBrewDir"] + "cache/" + package.Identifier + "." + package.FileType).read())
-                if package.FileType == "sh":subprocess.call(["sh", settings["zenBrewDir"] + "cache/" + package.Identifier + "." + package.FileType])
+                if package.FileType == "sh": subprocess.call(["sh", settings["zenBrewDir"] + "cache/" + package.Identifier + "." + package.FileType])
         elif package.Type == "executable":
                 subprocess.call(["mv", settings["zenBrewDir"] + "cache/" + package.Identifier + "." + package.FileType, settings["zenBrewDir"] + "bin/"])
                 subprocess.call(["chmod", "755", settings["zenBrewDir"] + "bin/" + package.Identifier + "." + package.FileType])

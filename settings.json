@@ -1,5 +1,5 @@
 {
         "clearCache": true,
         "zenBrewDir": "/opt/OpenCortex/ZenBrew/",
-        "defaultRepo": "https://zen.judahfuller.com/repo/"
+        "defaultRepo": "https://github.com/JudahZF/zenBrewWeb/raw/main/repo/"
 }

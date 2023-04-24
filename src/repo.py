@@ -1,5 +1,5 @@
 import json, os, os.path, urllib, subprocess, logging
-with open("../settings.json") as jsonfile:
+with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 def fuzzSort(fuzzList):
@@ -16,11 +16,11 @@ def getFile(url, file):
         return output
 
 def updateInstallLog(id, version):
-        with open(settings["OpenCortexDir"] + "installedPackages.json", 'r') as file:
+        with open(settings["zenBrewDir"] + "installedPackages.json", 'r') as file:
                 installedLog = json.load(file)
         if version == -1: installedLog.pop(id)
         else: installedLog[id] = version
-        with open(settings["OpenCortexDir"] + "installedPackages.json", 'w') as file:
+        with open(settings["zenBrewDir"] + "installedPackages.json", 'w') as file:
                 file.write(json.dumps(installedLog))
 
 class Repo:

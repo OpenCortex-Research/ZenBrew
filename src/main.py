@@ -1,12 +1,11 @@
-import argparse, json, sys
+import argparse, json, sys, logging
 from repo import Repo
-from install import installPackahe
 with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,)
 
-parser.add_argument("Operation", choices=["install", "search"])
+parser.add_argument("Operation", choices=["install", "update", "uninstall"])
 parser.add_argument("-q", "--quiet", default=False, action="store_true", help="Reduce output text")
 parser.add_argument("-r", "--repo", default=settings['defaultRepo'], action="store", help="Set a custom repo")
 parser.add_argument("-d", "--detailed", action="store_true", help="Shows more detail during search or selection")
@@ -14,10 +13,12 @@ parser.add_argument("Package")
 
 args = parser.parse_args()
 operation = args.Operation
-package = args.Package
+package = args.Package.split('@')
+if len(package) == 1:
+    package[1] = False
 
 repo = Repo(args.repo)
-
+"""
 searchFuzz=repo.searchPackages(package)
 def Search():
     if len(searchFuzz) == 0:
@@ -33,14 +34,39 @@ def Search():
         else: print("     " + repo.getPackageInfo(searchFuzz[i][1], "Description"))
 
 if operation == "search":
-    Search()
+    Search()"""
 
 if operation == "install":
-    isMatch = repo.packageMatch(package)
+    isMatch = repo.packageMatch(package[0])
+    if not package[1]: print("Installing a custom version will overwrite any other installed versions.")
     if not isMatch:
-        Search()
+        print("Package does not currently exiist in repo")
+        sys.exit()
         toInstall = input("Which package would you like to install: [0] ")
         if toInstall == "": toInstall = 0
         else: toInstall = int(toInstall)
         isMatch = repo.packageMatch(searchFuzz[toInstall][1])
-    installPackahe(isMatch)
+    repo.packages[isMatch].install(package[1])
+
+if operation == "update":
+    isMatch = repo.packageMatch(package[0])
+    if not isMatch:
+        print("Installing a custom version will overwrite any other installed versions.")
+        print("Package does not currently exiist in repo")
+        sys.exit()
+        toInstall = input("Which package would you like to install: [0] ")
+        if toInstall == "": toInstall = 0
+        else: toInstall = int(toInstall)
+        isMatch = repo.packageMatch(searchFuzz[toInstall][1])
+    repo.packages[isMatch].update(package[1])
+
+if operation == "uninstall":
+    isMatch = repo.packageMatch(package[0])
+    if not isMatch:
+        print("Package does not currently exiist in repo")
+        sys.exit()
+        toInstall = input("Which package would you like to install: [0] ")
+        if toInstall == "": toInstall = 0
+        else: toInstall = int(toInstall)
+        isMatch = repo.packageMatch(searchFuzz[toInstall][1])
+    repo.packages[isMatch].uninstall(package[1])

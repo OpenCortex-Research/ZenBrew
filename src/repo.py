@@ -1,22 +1,37 @@
-import json, requests
-from fuzzywuzzy import fuzz
+import json, os, os.path, urllib, subprocess, logging
 with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 def fuzzSort(fuzzList):
         return fuzzList[0]
 
+def getFile(url, file):
+        destination = settings["zenBrewDir"] +"cache/"
+        if os.path.exists(destination) is False:
+                os.mkdirs(destination)
+        urllib.urlretrieve(url + file, os.path.join(destination, file))
+        with open(destination + file, 'r') as output: return output
+
+def updateInstallLog(id, version):
+        with open(settings["OpenCortexDir"] + "installedPackages.json", 'r') as file:
+                installedLog = json.loads(file)
+        if version == -1: installedLog.pop(id)
+        else: installedLog[id] = version
+        with open(settings["OpenCortexDir"] + "installedPackages.json", 'w') as file:
+                file.write(installedLog)
+
+
 class Repo:
         def __init__(self, url):
                 self.url = url
-                file = requests.get(self.url + "repo.json")
+                file = getFile(self.url, "repo.json")
                 self.json = json.loads(str(file.text))
                 file.close()
                 self.name = self.json["Name"]
                 self.format = self.json["Format"]
                 self.packageFile = self.json["Packages"]
                 self.packages = []
-                packageCSV = str(requests.get(self.url + self.packageFile).text)
+                packageCSV = str(getFile(self.url, self.packageFile).text)
                 packageCSV = packageCSV.split('\n')
                 packageCSV.pop(0)
                 for i in range(len(packageCSV)):
@@ -25,13 +40,13 @@ class Repo:
                                 packageCSV[i] = packageCSV[i].split(', ')
                                 self.packages.append(Package(self.url, packageCSV[i][0]))
 
-        def searchPackages(self, searcTerm):
+        """def searchPackages(self, searcTerm):
                 searchFuzz = []
                 for i in self.packages:
                         if fuzz.ratio(searcTerm.lower(), i.Identifier.lower()) >= 0.8:
                                 searchFuzz.append([fuzz.ratio(searcTerm, i.Identifier), i.Identifier])
                 searchFuzz.sort(key=fuzzSort, reverse=True)
-                return (searchFuzz[0:10])
+                return (searchFuzz[0:10])"""
 
         def getPackageInfo(self, package, info):
                 for i in self.packages:
@@ -46,24 +61,44 @@ class Repo:
 
 class Package:
         def __init__(self, repoURL, jsonFile):
-                self.url = repoURL + jsonFile
+                self.url = repoURL
                 self.downloaded = False
-                file = requests.get(self.url)
+                file = getFile(repoURL, jsonFile)
                 text = str(file.text)
                 self.json = json.loads(text)
                 file.close()
                 self.Identifier = self.json["Identifier"]
-                self.Script = self.json["Script"]
                 self.FileType = self.json["FileType"]
-                self.PackageLocation = self.json["Package Location"]
-                self.Type = self.json["Type"]
+                self.versions = self.json["versions"]
+                self.newestVer = len(self.versions)-1
+                self.Location = settings["OpenCortexDir"] + self.Identifier + "/"
 
-        def download(self):
-                file = requests.get(self.PackageLocation)
-                save = open(settings["zenBrewDir"] + "cache/" + self.Identifier + "." + self.FileType, "wb")
-                save.write(file.content)
-                file.close()
-                save.close()
-
-testRepo = Repo("https://zen.judahfuller.com/repo/")
-testRepo.searchPackages("Test py")
+        def download(self, version=False):
+                try:
+                        if version == False: version = self.newestVer
+                        file = getFile(self.versions[version]["Location"], self.versions[version]["FileName"])
+                        subprocess.call(["mv", settings["zenBrewDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
+                        subprocess.call(["unzip"], [settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                        subprocess.call(["rm"], [settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                        return True
+                except Exception as e:
+                        return False
+        
+        def install(self, version=False):
+                if version == False: version = self.newestVer
+                if self.download(version):
+                        subprocess.call(["bash", self.Location + "install.sh"])
+                        updateInstallLog(self.Identifier, self.versions[version]["id"])
+                else: print("Error")
+        
+        def update(self, version=False):
+                if version == False: version = self.newestVer
+                if self.download(version):
+                        subprocess.call(["bash", self.Location + "update.sh"])
+                        updateInstallLog(self.Identifier, self.versions[version]["id"])
+                else: print("Error")
+        
+        def uninstall(self):
+                subprocess.call(["bash", self.Location + "uninstall.sh"])
+                subprocess.call(["rm", "-r", self.Location])
+                updateInstallLog(self.Identifier, -1)

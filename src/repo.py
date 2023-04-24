@@ -1,37 +1,38 @@
 import json, os, os.path, urllib, subprocess, logging
-with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
+with open("../settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 def fuzzSort(fuzzList):
         return fuzzList[0]
 
 def getFile(url, file):
-        destination = settings["zenBrewDir"] +"cache/"
+        destination = settings["OpenCortexDir"] +"cache/"
         if os.path.exists(destination) is False:
-                os.mkdirs(destination)
+                os.mkdir(destination)
         urllib.urlretrieve(url + file, os.path.join(destination, file))
-        with open(destination + file, 'r') as output: return output
+        json = open(destination + file, 'r')
+        output = str(json.read())
+        json.close()
+        return output
 
 def updateInstallLog(id, version):
         with open(settings["OpenCortexDir"] + "installedPackages.json", 'r') as file:
-                installedLog = json.loads(file)
+                installedLog = json.load(file)
         if version == -1: installedLog.pop(id)
         else: installedLog[id] = version
         with open(settings["OpenCortexDir"] + "installedPackages.json", 'w') as file:
-                file.write(installedLog)
-
+                file.write(json.dumps(installedLog))
 
 class Repo:
         def __init__(self, url):
                 self.url = url
                 file = getFile(self.url, "repo.json")
-                self.json = json.loads(str(file.text))
-                file.close()
+                self.json = json.loads(str(file))
                 self.name = self.json["Name"]
                 self.format = self.json["Format"]
                 self.packageFile = self.json["Packages"]
                 self.packages = []
-                packageCSV = str(getFile(self.url, self.packageFile).text)
+                packageCSV = str(getFile(self.url, self.packageFile))
                 packageCSV = packageCSV.split('\n')
                 packageCSV.pop(0)
                 for i in range(len(packageCSV)):
@@ -63,10 +64,8 @@ class Package:
         def __init__(self, repoURL, jsonFile):
                 self.url = repoURL
                 self.downloaded = False
-                file = getFile(repoURL, jsonFile)
-                text = str(file.text)
+                text = getFile(repoURL, jsonFile)
                 self.json = json.loads(text)
-                file.close()
                 self.Identifier = self.json["Identifier"]
                 self.FileType = self.json["FileType"]
                 self.versions = self.json["versions"]
@@ -74,15 +73,14 @@ class Package:
                 self.Location = settings["OpenCortexDir"] + self.Identifier + "/"
 
         def download(self, version=False):
-                try:
-                        if version == False: version = self.newestVer
-                        file = getFile(self.versions[version]["Location"], self.versions[version]["FileName"])
-                        subprocess.call(["mv", settings["zenBrewDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
-                        subprocess.call(["unzip"], [settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                        subprocess.call(["rm"], [settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                        return True
-                except Exception as e:
-                        return False
+                if version == False: version = self.newestVer
+                file = getFile(self.versions[version]["Location"], self.versions[version]["FileName"])
+                subprocess.call(["mv", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
+                subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                subprocess.call(["mv", settings["zenBrewDir"] + self.Identifier, settings["OpenCortexDir"]])
+                subprocess.call(["rm", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                if settings["clearCache"] == True: subprocess.call(["rm", "-r", settings["OpenCortexDir"] + "cache/"])
+                return True
         
         def install(self, version=False):
                 if version == False: version = self.newestVer
@@ -101,4 +99,5 @@ class Package:
         def uninstall(self):
                 subprocess.call(["bash", self.Location + "uninstall.sh"])
                 subprocess.call(["rm", "-r", self.Location])
+                if settings["clearCache"] == True: subprocess.call(["rm", "-r", settings["OpenCortexDir"] + "cache/"])
                 updateInstallLog(self.Identifier, -1)

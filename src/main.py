@@ -1,21 +1,24 @@
 import argparse, json, sys, logging
 from repo import Repo
-with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
+with open("./settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,)
 
-parser.add_argument("Operation", choices=["install", "update", "uninstall"])
+parser.add_argument("Operation", choices=["install", "update", "uninstall", "packages"])
 parser.add_argument("-q", "--quiet", default=False, action="store_true", help="Reduce output text")
 parser.add_argument("-r", "--repo", default=settings['defaultRepo'], action="store", help="Set a custom repo")
 parser.add_argument("-d", "--detailed", action="store_true", help="Shows more detail during search or selection")
-parser.add_argument("Package")
+parser.add_argument("Package", nargs='?')
 
 args = parser.parse_args()
 operation = args.Operation
-package = args.Package.split('@')
-if len(package) == 1:
-    package.append(False)
+if args.Operation in ["install", "update", "uninstall"] and args.Package is None:
+    parser.error("<Package> required")
+if args.Package: 
+    package = args.Package.split('@')
+    if len(package) == 1:
+        package.append(False)
 
 repo = Repo(args.repo)
 """
@@ -70,3 +73,12 @@ if operation == "uninstall":
         else: toInstall = int(toInstall)
         isMatch = repo.packageMatch(searchFuzz[toInstall][1])
     isMatch.uninstall()
+
+if operation == "packages":
+    for i in repo.packages:
+        print(i.Identifier + ":")
+        if args.detailed: 
+            print("     Author: " + repo.getPackageInfo(i.Identifier, "Author"))
+            print("     Description: " + repo.getPackageInfo(i.Identifier, "Description"))
+            print("     Location: " + repo.getPackageInfo(i.Identifier, "Package Location"))
+        else: print("     " + repo.getPackageInfo(i.Identifier, "Description"))

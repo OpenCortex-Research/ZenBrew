@@ -83,9 +83,9 @@ class Package:
                 subprocess.call(["curl", "-L", "-s", (self.versions[version]["Location"]+ self.versions[version]["FileName"]), "-o", (settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"])])
                 subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
                 subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["zenBrewDir"] + self.Identifier, settings["OpenCortexDir"]])
+                #subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + self.Identifier, settings["OpenCortexDir"]])
                 subprocess.call(["rm", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                subprocess.call(["rm", "-r", settings["zenBrewDir"] + self.Identifier])
+                #subprocess.call(["rm", "-r", settings["zenBrewDir"] + self.Identifier])
                 return True
         
         def install(self, version=False):

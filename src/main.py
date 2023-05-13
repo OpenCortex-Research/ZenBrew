@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import argparse, json, sys, logging
 from repo import Repo
 with open("./settings.json") as jsonfile:

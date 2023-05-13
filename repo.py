@@ -82,9 +82,10 @@ class Package:
                 if version == False: version = self.newestVer
                 subprocess.call(["curl", "-L", "-s", (self.versions[version]["Location"]+ self.versions[version]["FileName"]), "-o", (settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"])])
                 subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
-                subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                subprocess.call(["gunzip", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"][:-3], "-C", settings["OpenCortexDir"]])
                 #subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + self.Identifier, settings["OpenCortexDir"]])
-                #subprocess.call(["rm", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
+                subprocess.call(["rm", settings["OpenCortexDir"] + self.versions[version]["FileName"][:-3]])
                 #subprocess.call(["rm", "-r", settings["zenBrewDir"] + self.Identifier])
                 return True
         

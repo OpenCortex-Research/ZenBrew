@@ -23,6 +23,12 @@ def updateInstallLog(id, version):
         with open(settings["zenBrewDir"] + "installedPackages.json", 'w') as file:
                 file.write(json.dumps(installedLog))
 
+def isInstalled(id):
+        with open(settings["zenBrewDir"] + "installedPackages.json", 'r') as file:
+                installedLog = json.load(file)
+        if id in installedLog: return True
+        else: return False
+
 class Repo:
         def __init__(self, url):
                 self.url = url
@@ -74,12 +80,12 @@ class Package:
 
         def download(self, version=False):
                 if version == False: version = self.newestVer
-                file = getFile(self.versions[version]["Location"], self.versions[version]["FileName"])
-                subprocess.call(["mv", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
+                subprocess.call(["curl", "-L", "-s", (self.versions[version]["Location"]+ self.versions[version]["FileName"]), "-o", (settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"])])
+                subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
                 subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                subprocess.call(["mv", settings["zenBrewDir"] + self.Identifier, settings["OpenCortexDir"]])
+                subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["zenBrewDir"] + self.Identifier, settings["OpenCortexDir"]])
                 subprocess.call(["rm", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
-                if settings["clearCache"] == True: subprocess.call(["rm", "-r", settings["OpenCortexDir"] + "cache/"])
+                subprocess.call(["rm", "-r", settings["zenBrewDir"] + self.Identifier])
                 return True
         
         def install(self, version=False):
@@ -90,14 +96,15 @@ class Package:
                 else: print("Error")
         
         def update(self, version=False):
-                if version == False: version = self.newestVer
-                if self.download(version):
-                        subprocess.call(["bash", self.Location + "update.sh"])
-                        updateInstallLog(self.Identifier, self.versions[version]["id"])
-                else: print("Error")
+                if isInstalled(self.Identifier):
+                        if version == False: version = self.newestVer
+                        if self.download(version):
+                                subprocess.call(["bash", self.Location + "update.sh"])
+                                updateInstallLog(self.Identifier, self.versions[version]["id"])
+                        else: print("Error")
+                else: print("Package Not Installed")
         
         def uninstall(self):
                 subprocess.call(["bash", self.Location + "uninstall.sh"])
                 subprocess.call(["rm", "-r", self.Location])
-                if settings["clearCache"] == True: subprocess.call(["rm", "-r", settings["OpenCortexDir"] + "cache/"])
                 updateInstallLog(self.Identifier, -1)

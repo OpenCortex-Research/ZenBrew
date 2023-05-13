@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-import argparse, json, sys, logging
+import argparse, json, sys, logging, subprocess
 from repo import Repo
 with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
@@ -83,3 +83,5 @@ if operation == "packages":
             print("     Description: " + repo.getPackageInfo(i.Identifier, "Description"))
             print("     Location: " + repo.getPackageInfo(i.Identifier, "Package Location"))
         else: print("     " + repo.getPackageInfo(i.Identifier, "Description"))
+
+if settings["clearCache"] == True: subprocess.call(["rm", "-r", settings["OpenCortexDir"] + "cache/"])

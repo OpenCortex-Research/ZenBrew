@@ -1,5 +1,5 @@
 import json, os, os.path, urllib, subprocess, logging
-with open("./settings.json") as jsonfile:
+with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 def fuzzSort(fuzzList):

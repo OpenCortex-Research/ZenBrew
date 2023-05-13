@@ -4,4 +4,4 @@ curl "https://github.com/OpenCortex-Research/ZenBrew/releases/download/V0.1/ZenB
 gunzip ZenBrew-0_1_2.tar.gz
 tar -xf ZenBrew-0_1_2.tar
 rm ZenBrew-0_1_2.tar
-ln -s /opt/OpenCortex/ZenBrew/main.py /bin/ZenBrew
+ln -s /opt/OpenCortex/ZenBrew/main.py /bin/zenbrew

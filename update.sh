@@ -10,3 +10,4 @@ rm /bin/zenbrew
 ln -s /opt/OpenCortex/ZenBrew/main.py /bin/zenbrew
 chmod +x /opt/OpenCortex/ZenBrew/main.py
 chmod +x /bin/zenbrew
+chmod +x /usr/bin/zenbrew

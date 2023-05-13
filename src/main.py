@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 import argparse, json, sys, logging
 from repo import Repo
-with open("./settings.json") as jsonfile:
+with open("/opt/OpenCortex/ZenBrew/settings.json") as jsonfile:
         settings = json.load(jsonfile)
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,)

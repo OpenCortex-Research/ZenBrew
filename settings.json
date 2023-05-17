@@ -2,5 +2,5 @@
         "clearCache": true,
         "zenBrewDir": "/media/p4/OpenCortex/ZenBrew/",
         "OpenCortexDir": "/media/p4/OpenCortex/",
-        "defaultRepo": "https://github.com/JudahZF/zenBrewWeb/raw/main/repo/"
+        "defaultRepo": "https://github.com/OpenCortex-Research/zenBrewRepo/raw/main/repo/"
 }

@@ -1,7 +1,7 @@
 #! /bin/sh
 mkdir /media/p4/OpenCortex/cache
 cd /media/p4/OpenCortex/cache
-curl -L https://github.com/OpenCortex-Research/ZenBrew/archive/refs/tags/V0.2.1.tar.gz -o ZenBrew.tar.gz
+curl -L https://github.com/OpenCortex-Research/ZenBrew/releases/download/V0.2.1/ZenBrew.tar.gz -o ZenBrew.tar.gz
 gunzip ZenBrew.tar.gz
 tar -xf ZenBrew.tar
 rm ZenBrew.tar

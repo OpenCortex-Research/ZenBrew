@@ -92,7 +92,7 @@ class Package:
         def install(self, version=False):
                 if version == False: version = self.newestVer
                 if self.download(version):
-                        subprocess.call(["bash", self.Location + "install.sh"])
+                        subprocess.call(["sh", self.Location + "install.sh"])
                         updateInstallLog(self.Identifier, self.versions[version]["id"])
                 else: print("Error")
         
@@ -100,12 +100,12 @@ class Package:
                 if isInstalled(self.Identifier):
                         if version == False: version = self.newestVer
                         if self.download(version):
-                                subprocess.call(["bash", self.Location + "update.sh"])
+                                subprocess.call(["sh", self.Location + "update.sh"])
                                 updateInstallLog(self.Identifier, self.versions[version]["id"])
                         else: print("Error")
                 else: print("Package Not Installed")
         
         def uninstall(self):
-                subprocess.call(["bash", self.Location + "uninstall.sh"])
+                subprocess.call(["sh", self.Location + "uninstall.sh"])
                 subprocess.call(["rm", "-r", self.Location])
                 updateInstallLog(self.Identifier, -1)

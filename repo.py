@@ -81,7 +81,7 @@ class Package:
         def download(self, version=False):
                 if version == False: version = self.newestVer
                 subprocess.call(["curl", "-L", "-s", (self.versions[version]["Location"]+ self.versions[version]["FileName"]), "-o", (settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"])])
-                subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
+                subprocess.call(["cp", "-R", "-p", "-f", settings["OpenCortexDir"] + "cache/" + self.versions[version]["FileName"], settings["OpenCortexDir"]])
                 subprocess.call(["gunzip", settings["OpenCortexDir"] + self.versions[version]["FileName"]])
                 subprocess.call(["tar", "-xf", settings["OpenCortexDir"] + self.versions[version]["FileName"][:-3], "-C", settings["OpenCortexDir"]])
                 #subprocess.call(["cp", "--recursive", "--preserve", "--update", settings["OpenCortexDir"] + self.Identifier, settings["OpenCortexDir"]])

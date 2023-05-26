@@ -1,0 +1,34 @@
+#! /bin/sh
+echo "    ____                   ______           __             "
+echo "   / __ \____  ___  ____  / ____/___  _____/ /____  _  __  "
+echo "  / / / / __ \/ _ \/ __ \/ /   / __ \/ ___/ __/ _ \| |/_/  "
+echo " / /_/ / /_/ /  __/ / / / /___/ /_/ / /  / /_/  __/>  <    "
+echo " \____/ .___/\___/_/ /_/\____/\____/_/   \__/\___/_/|_|    "
+echo "     /_/                       ZenBrew Package Manager "
+echo " "
+
+echo "Do you want to install [Package Name] (y/n) "
+read REPLY
+
+if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]
+then
+    set -e # Exit immediately if a command exits with a non-zero status
+    echo "[!] Installing [Package Name]..."
+
+    cd /media/p4/OpenCortex/
+    echo "Downloading [Package Name]..."
+    curl -L -s "[Package Location]" -o PackageIdentifier.tar.gz
+    
+    echo "Extracting..."
+    gunzip PackageIdentifier.tar.gz
+    tar -xf PackageIdentifier.tar
+    rm PackageIdentifier.tar
+
+    echo "Creating links and setting permissions..."
+    # You Code To Link or Setup Files Here
+    
+    echo "[Package Name] installed!"
+    echo ""
+    exit 0
+fi
+exit 1

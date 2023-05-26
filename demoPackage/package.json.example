@@ -1,0 +1,13 @@
+{
+	"Identifier": "Your Packge ID. This will also be your packages folder name.",
+	"Description": "A description for you package",
+	"Author": "Your name or you organisations name",
+	"runAtStartup": true,
+	"versions": [
+		{
+			"id": "Version Number: 1.0.0",
+			"branch": "Release or Beta or Development",
+			"Location": "A link to the folder containing the package.tar.gz file"
+		}
+	]
+}

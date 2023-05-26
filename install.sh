@@ -22,9 +22,9 @@ then
 
     cd /media/p4/OpenCortex/
     echo "Downloading ZenBrew..."
-    curl -L -s https://github.com/OpenCortex-Research/ZenBrew/releases/download/V0.2.1/ZenBrew.tar.gz -o ZenBrew.tar.gz
+    curl -L -s https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/main/ZenBrew.tar.gz -o ZenBrew.tar.gz
     
-    echo "extracting..."
+    echo "Extracting..."
     gunzip ZenBrew.tar.gz
     tar -xf ZenBrew.tar
     rm ZenBrew.tar
@@ -41,4 +41,6 @@ then
     echo "ZenBrew installed!"
     echo ""
     zenbrew --help
+    exit 0
 fi
+exit 1

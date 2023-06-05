@@ -5,7 +5,7 @@
 	"runAtStartup": true,
 	"versions": [
 		{
-			"ID": "Version Number: 1.0.0",
+			"id": "Version Number: 1.0.0",
 			"branch": "Release or Beta or Development",
 			"location": "A link to the folder containing the package.tar.gz file"
 		}

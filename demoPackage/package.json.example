@@ -1,10 +1,10 @@
 {
-	"identifier": "Your Packge ID. This will also be your packages folder name.",
+	"id": "Your Packge ID. This will also be your packages folder name.",
 	"description": "A description for you package",
 	"author": "Your name or you organisations name",
 	"versions": [
 		{
-			"id": "Version Number: 1.0.0",
+			"id": "Version Number: 1.0.0 - is also the name of the folder where the files for this version are stored",
 			"branch": "release or beta or dev or pre-release",
 			"features": ["relink", "startup", "command"]
 		}

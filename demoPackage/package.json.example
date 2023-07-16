@@ -5,7 +5,7 @@
 	"versions": [
 		{
 			"id": "Version Number: 1.0.0",
-			"branch": "Release or Beta or Development",
+			"branch": "release or beta or dev or pre-release",
 			"features": ["relink", "startup", "command"]
 		}
 	]

@@ -5,24 +5,13 @@ import ssl
 import urllib2
 import subprocess
 import logging
+from src.funcs import getFile
 with open("/media/p4/OpenCortex/ZenBrew/settings.json") as jsonfile:
     settings = json.load(jsonfile)
 
 
 def fuzzSort(fuzzList):
     return fuzzList[0]
-
-
-def getFile(url, file):
-    destination = settings["OpenCortexDir"] + "cache/"
-    if os.path.exists(destination) is False:
-        os.mkdir(destination)
-
-    print(url + file)
-
-    subprocess.call(["curl", "-s", "-L", "-o", os.path.join(destination, file), url + file])
-    return open(os.path.join(destination, file), 'r').read()
-
 
 def updateInstallLog(id, version):
     with open(settings["zenBrewDir"] + "installedPackages.json", 'r') as file:

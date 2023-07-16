@@ -3,7 +3,10 @@
 	"zenBrewDir": "/media/p4/OpenCortex/ZenBrew/",
 	"openCortexDir": "/media/p4/OpenCortex/",
 	"repos": [
-		"https://raw.githubusercontent.com/OpenCortex-Research/zenBrewRepo/main/repo/"
+		{
+			"name": "ZenBrew",
+			"url": "https://raw.githubusercontent.com/OpenCortex-Research/zenBrewRepo/main/repo/"
+		}
 	],
 	"repoKeys": []
 }

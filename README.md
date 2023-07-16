@@ -36,3 +36,32 @@ Since the QC relies on Python 2.7, we need to develop for that target. This is q
 ### VSCode
 
 For development in VSCode, download the **v2021.9.1246542782** Python extension. This version has support for Python 2 interpreters, codelens,...
+
+### File Structure
+
+#### ZenBrew files
+
+ZenBrew files are installed to
+/media/p4/OpenCortex/ZenBrew/
+
+The main ZB files are:
+
+<!-- prettier-ignore -->
+- repo - Repository cache files
+  - Contains each repos .json file and a file with the timestamp of the last repo update
+- packageCache - Package cache files. This folder is regularly cleared during package install/updates/uninstall
+- settings.json - Settings file
+- installedPackages.json - Installed packages and there current versions
+
+#### Package files
+
+Package files are installed to  
+/media/p4/OpenCortex/{package name}/
+
+Each package folder should contain:
+
+<!-- prettier-ignore -->
+- install.sh
+- update.sh
+- uninstall.sh
+- {package name}.json

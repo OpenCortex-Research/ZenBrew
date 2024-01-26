@@ -11,9 +11,9 @@ func main() {
 }
 
 type Settings struct {
-	auto_cleanup bool "json:boolean"
-	root_dir     string "json:string"
-	repos		[]string "json:string"
+	AutoCleanup bool   `json:"cleanup"`
+	RootDir     string `json:"dir"`
+	Repos        []string `json:"repos"`
 }
 
 var settings Settings

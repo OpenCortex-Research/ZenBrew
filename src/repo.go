@@ -12,21 +12,16 @@ import (
 	log "log/slog"
 )
 
-type RepoLink struct{
-	name string
-	url string
-}
-
 type Repo struct {
-	name string "json:string"
-	version string "json:string"
-	maintainer string "json:string"
-	url string "json:string"
+	Name       string `json:"name"`
+	Version    string `json:"version"`
+	Maintainer string `json:"maintainer"`
+	URL        string `json:"url"`
 }
 
-func download_repo_json(repo_link RepoLink) Repo {
-	json_url := repo_link.url + "repo.json"
-	hash_url := repo_link.url + "repo.sha256"
+func download_repo_json(repo_url string) Repo {
+	json_url := repo_url + "repo.json"
+	hash_url := repo_url + "repo.sha256"
 
 	json_bytes := download_file(json_url)
 	hash_bytes := download_file(hash_url)

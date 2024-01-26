@@ -13,24 +13,26 @@ import (
 	log "log/slog"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 )
 
 type Package struct {
-	name string "json:string"
-	version string "json:string"
-	maintainer string "json:string"
-	url string "json:string"
+	Name       string `json:"name"`
+	Format     string `json:"format"`
+	Maintainer string `json:"maintainer"`
+	URL        string `json:"url"`
 }
 
 type PackageLink struct {
-	name string
-	url string
+	Name string
+	URL  string
 }
 
+
 func download_package_metadata(package_link PackageLink) Package {
-	json_url := package_link.url + "package.json"
-	hash_url := package_link.url + "package.sha256"
+	json_url := package_link.URL + "package.json"
+	hash_url := package_link.URL + "package.sha256"
 
 	json_bytes := download_file(json_url)
 	hash_bytes := download_file(hash_url)
@@ -51,8 +53,8 @@ func download_package_metadata(package_link PackageLink) Package {
 }
 
 func (pkg Package) download() {
-	package_url := pkg.url + "package.tar.gz"
-	package_path := path.Join(settings.root_dir, "zenbrew", pkg.name, pkg.version)
+	package_url := pkg.URL + pkg.Name + ".tar.gz"
+	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
 
 	// Download the package
 	resp, err := http.Get(package_url)
@@ -70,8 +72,8 @@ func (pkg Package) download() {
 	}
 
 	// Create the tar.gz file
-	filePath := path.Join(package_path, "package.tar.gz")
-	file, err := os.Create(filePath)
+	file_path := path.Join(package_path, "package.tar.gz")
+	file, err := os.Create(file_path)
 	if err != nil {
 		log.Error("Failed to create package file:", err)
 		panic("Failed to create package file")
@@ -86,7 +88,7 @@ func (pkg Package) download() {
 	}
 
 	// Extract the tar.gz file
-	err = extract_tar(filePath, package_path)
+	err = extract_tar(file_path, package_path)
 	if err != nil {
 		log.Error("Failed to extract package:", err)
 		panic("Failed to extract package")
@@ -94,5 +96,38 @@ func (pkg Package) download() {
 }
 
 func (pkg Package) install() {
+	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
 	
+	// Run the install file as a subprocess
+	cmd := exec.Command(package_path, "install")
+	err := cmd.Run()
+	if err != nil {
+		log.Error("Failed to run install file:", err)
+		panic("Failed to run install file")
+	}
+}
+
+func (pkg Package) uninstall() {
+	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+	
+	// Run the install file as a subprocess
+	cmd := exec.Command(package_path, "uninstall")
+	err := cmd.Run()
+	if err != nil {
+		log.Error("Failed to run install file:", err)
+		panic("Failed to run install file")
+	}
+	os.RemoveAll(package_path)
+}
+
+func (pkg Package) update() {
+	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+	
+	// Run the install file as a subprocess
+	cmd := exec.Command(package_path, "update")
+	err := cmd.Run()
+	if err != nil {
+		log.Error("Failed to run install file:", err)
+		panic("Failed to run install file")
+	}
 }

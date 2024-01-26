@@ -1,13 +1,17 @@
+/*
+Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+*/
 package main
 
 import (
+	"OpenCortex/ZenBrew/cmd"
 	"encoding/json"
 	log "log/slog"
 	"os"
 )
 
 func main() {
-	log.Info("hello slog")
+	cmd.Execute()
 }
 
 type Settings struct {

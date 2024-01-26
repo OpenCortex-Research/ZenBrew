@@ -5,9 +5,10 @@
  * @copyright
  */
 
-package main
+package pkg
 
 import (
+	"OpenCortex/ZenBrew/utils"
 	"encoding/json"
 	"io"
 	log "log/slog"
@@ -30,14 +31,14 @@ type PackageLink struct {
 }
 
 
-func download_package_metadata(package_link PackageLink) Package {
+func DownloadPackageMetadata(package_link PackageLink) Package {
 	json_url := package_link.URL + "package.json"
 	hash_url := package_link.URL + "package.sha256"
 
-	json_bytes := download_file(json_url)
-	hash_bytes := download_file(hash_url)
+	json_bytes := utils.DownloadFile(json_url)
+	hash_bytes := utils.DownloadFile(hash_url)
 
-	if !check_hash(json_bytes, hash_bytes) {
+	if !utils.CheckHash(json_bytes, hash_bytes) {
 		log.Error("Hashes do not match.")
 		panic("Hashes do not match.")
 	}
@@ -52,9 +53,9 @@ func download_package_metadata(package_link PackageLink) Package {
 	return pkg
 }
 
-func (pkg Package) download() {
+func (pkg Package) Download() {
 	package_url := pkg.URL + pkg.Name + ".tar.gz"
-	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Download the package
 	resp, err := http.Get(package_url)
@@ -88,15 +89,15 @@ func (pkg Package) download() {
 	}
 
 	// Extract the tar.gz file
-	err = extract_tar(file_path, package_path)
+	err = utils.ExtractTar(file_path, package_path)
 	if err != nil {
 		log.Error("Failed to extract package:", err)
 		panic("Failed to extract package")
 	}
 }
 
-func (pkg Package) install() {
-	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+func (pkg Package) Install() {
+	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 	
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "install")
@@ -108,7 +109,7 @@ func (pkg Package) install() {
 }
 
 func (pkg Package) uninstall() {
-	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 	
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "uninstall")
@@ -121,7 +122,7 @@ func (pkg Package) uninstall() {
 }
 
 func (pkg Package) update() {
-	package_path := path.Join(settings.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 	
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "update")

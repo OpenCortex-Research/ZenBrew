@@ -5,7 +5,7 @@
  * @copyright
  */
 
-package main
+package utils
 
 import (
 	"archive/tar"
@@ -19,7 +19,7 @@ import (
 	"path"
 )
 
-func check_hash(file []byte, hash []byte) bool {
+func CheckHash(file []byte, hash []byte) bool {
 
 	// Calculate the hash of the file
 	file_hash := sha256.Sum256(file)
@@ -35,7 +35,7 @@ func check_hash(file []byte, hash []byte) bool {
 	}
 }
 
-func download_file(raw_url string) ([]byte) {
+func DownloadFile(raw_url string) ([]byte) {
 
 	// Download the file
 	resp, err := http.Get(raw_url)
@@ -58,7 +58,7 @@ func download_file(raw_url string) ([]byte) {
 // extract_tar extracts the contents of a tar.gz file to a specified destination directory.
 // It takes the source file path and the destination directory path as input parameters.
 // The function returns an error if any error occurs during the extraction process.
-func extract_tar(src, dest string) error {
+func ExtractTar(src, dest string) error {
 	// Open the source file
 	file, err := os.Open(src)
 	if err != nil {

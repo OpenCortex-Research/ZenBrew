@@ -12,14 +12,16 @@ import (
 	log "log/slog"
 	"net/http"
 
+	"OpenCortex/ZenBrew/pkg"
 	"OpenCortex/ZenBrew/utils"
 )
 
 type Repo struct {
 	Name       string `json:"name"`
-	Version    string `json:"version"`
+	Format    string `json:"format"`
 	Maintainer string `json:"maintainer"`
 	URL        string `json:"url"`
+	Packages   []pkg.PackageLink `json:"packages"`
 }
 
 func DownloadRepoJson(repo_url string) Repo {
@@ -45,16 +47,28 @@ func DownloadRepoJson(repo_url string) Repo {
 }
 
 func (repo Repo) CheckPackage(package_name string) bool {
-	packageURL := repo.URL + "/packages/" + package_name
-	resp, err := http.Head(packageURL)
-	if err != nil {
-		log.Error("Failed to check package existence:", err)
-		return false
+	if repo.Format == "array" {
+		if repo.Packages == nil {
+			return false
+		}
+		for _, package_link := range repo.Packages {
+			if package_link.Name == package_name {
+				return true
+			}
+		}
 	}
-	defer resp.Body.Close()
+	if repo.Format == "files" {
+		packageURL := repo.URL + "/packages/" + package_name
+		resp, err := http.Head(packageURL)
+		if err != nil {
+			log.Error("Failed to check package existence:", err)
+			return false
+		}
+		defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		return true
+		if resp.StatusCode == http.StatusOK {
+			return true
+		}
 	}
 	return false
 }

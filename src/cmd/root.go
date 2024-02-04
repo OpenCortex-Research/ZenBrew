@@ -20,7 +20,7 @@ import (
 var root_cmd = &cobra.Command{
 	Use:   "ZenBrew",
 	Short: "Homebrew Package Manager for the Quad Cortex",
-	Long: `Homebrew Package Manager for the Quad Cortex`,
+	Long:  `Homebrew Package Manager for the Quad Cortex`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 }
@@ -28,18 +28,18 @@ var root_cmd = &cobra.Command{
 var ping_cmd = &cobra.Command{
 	Use:   "ping",
 	Short: "ping test",
-	Long: `ping test`,
+	Long:  `ping test`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("pong")
-	 },
+	},
 }
 
 var install_cmd = &cobra.Command{
 	Use:   "install package_name",
 	Short: "Install a package",
-	Long: `Install a package`,
+	Long:  `Install a package`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Args: cobra.ExactArgs(1),
@@ -73,7 +73,7 @@ var install_cmd = &cobra.Command{
 				log.Info(fmt.Sprintf("%d: %s - %s", i, temp_package.Name, temp_package.URL))
 			}
 			log.Info("Please select a package to install: ")
-			fmt.Scanln(&selection)		
+			fmt.Scanln(&selection)
 		}
 		log.Info("Installing package")
 		selected_package := pkg.DownloadPackageMetadata(possible_packages[selection])
@@ -83,9 +83,9 @@ var install_cmd = &cobra.Command{
 }
 
 var update_cmd = &cobra.Command{
-	Use:   "install package_name",
-	Short: "Install a package",
-	Long: `Install a package`,
+	Use:   "update package_name",
+	Short: "Update a package",
+	Long:  `Update a package`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Args: cobra.ExactArgs(1),
@@ -119,19 +119,19 @@ var update_cmd = &cobra.Command{
 				log.Info(fmt.Sprintf("%d: %s - %s", i, temp_package.Name, temp_package.URL))
 			}
 			log.Info("Please select a package to install: ")
-			fmt.Scanln(&selection)		
+			fmt.Scanln(&selection)
 		}
-		log.Info("Installing package")
+		log.Info("Updating package")
 		selected_package := pkg.DownloadPackageMetadata(possible_packages[selection])
 		selected_package.Download()
-		selected_package.Install()
+		selected_package.Update()
 	},
 }
 
 var uninstall_cmd = &cobra.Command{
 	Use:   "install package_name",
 	Short: "Install a package",
-	Long: `Install a package`,
+	Long:  `Install a package`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Args: cobra.ExactArgs(1),
@@ -165,7 +165,7 @@ var uninstall_cmd = &cobra.Command{
 				log.Info(fmt.Sprintf("%d: %s - %s", i, temp_package.Name, temp_package.URL))
 			}
 			log.Info("Please select a package to install: ")
-			fmt.Scanln(&selection)		
+			fmt.Scanln(&selection)
 		}
 		log.Info("Installing package")
 		selected_package := pkg.DownloadPackageMetadata(possible_packages[selection])
@@ -177,7 +177,7 @@ var uninstall_cmd = &cobra.Command{
 var patch_cmd = &cobra.Command{
 	Use:   "patch",
 	Short: "patch the system",
-	Long: `link the binaries to the system`,
+	Long:  `link the binaries to the system`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
@@ -210,7 +210,7 @@ var patch_cmd = &cobra.Command{
 				log.Info(fmt.Sprintf("%d: %s - %s", i, temp_package.Name, temp_package.URL))
 			}
 			log.Info("Please select a package to install: ")
-			fmt.Scanln(&selection)		
+			fmt.Scanln(&selection)
 		}
 		log.Info("Installing package")
 		selected_package := pkg.DownloadPackageMetadata(possible_packages[selection])
@@ -248,5 +248,3 @@ func init() {
 	// when this action is called directly.
 	root_cmd.AddCommand(ping_cmd)
 }
-
-

@@ -30,7 +30,6 @@ type PackageLink struct {
 	URL  string
 }
 
-
 func DownloadPackageMetadata(package_link PackageLink) Package {
 	json_url := package_link.URL + "package.json"
 	hash_url := package_link.URL + "package.sha256"
@@ -98,7 +97,7 @@ func (pkg Package) Download() {
 
 func (pkg Package) Install() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
-	
+
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "install")
 	err := cmd.Run()
@@ -110,7 +109,7 @@ func (pkg Package) Install() {
 
 func (pkg Package) uninstall() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
-	
+
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "uninstall")
 	err := cmd.Run()
@@ -121,9 +120,9 @@ func (pkg Package) uninstall() {
 	os.RemoveAll(package_path)
 }
 
-func (pkg Package) update() {
+func (pkg Package) Update() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
-	
+
 	// Run the install file as a subprocess
 	cmd := exec.Command(package_path, "update")
 	err := cmd.Run()

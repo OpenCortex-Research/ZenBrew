@@ -19,10 +19,16 @@ import (
 )
 
 type Package struct {
-	Name       string `json:"name"`
-	Format     string `json:"format"`
-	Maintainer string `json:"maintainer"`
-	URL        string `json:"url"`
+	Name       string         `json:"name"`
+	Format     string         `json:"format"`
+	Maintainer string         `json:"maintainer"`
+	Versions   []PackageVersion `json:"versions"`
+	Latest     string         `json:"latest"`
+}
+
+type PackageVersion struct {
+	Version string `json:"version"`
+	URL     string `json:"url"`
 }
 
 type PackageLink struct {
@@ -52,8 +58,18 @@ func DownloadPackageMetadata(package_link PackageLink) Package {
 	return pkg
 }
 
-func (pkg Package) Download() {
-	package_url := pkg.URL + pkg.Name + ".tar.gz"
+func (pkg Package) Download(version string) {
+	if version == "" || version == "latest" {
+		version = pkg.Latest
+	}
+	var version_int int
+	for i, v := range pkg.Versions {
+		if v.Version == version {
+			version_int = i
+			break
+		}
+	}
+	package_url := pkg.Versions[version_int].URL
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Download the package

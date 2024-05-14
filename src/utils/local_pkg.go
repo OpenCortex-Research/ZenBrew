@@ -23,7 +23,9 @@ type InstalledPackage struct {
 func GetInstalledPackages() []InstalledPackage {
 	// Read the JSON file
 	file, err := os.ReadFile("installed_packages.json")
-	if err != nil {
+	if os.IsNotExist(err) {
+		return []InstalledPackage{}
+	} else if err != nil {
 		log.Error(err.Error())
 		panic(err)
 	}
@@ -37,6 +39,31 @@ func GetInstalledPackages() []InstalledPackage {
 	}
 
 	return installed_packages
+}
+
+func CheckIfPackageInstalled(name string) (bool, string) {
+	installed_packages := GetInstalledPackages()
+	if len(installed_packages) == 0 {
+		return false, ""
+	}
+	for _, installed_package := range installed_packages {
+		if installed_package.Name == name {
+			return true, installed_package.Version
+		}
+	}
+	return false, ""
+}
+
+func AddInstalledPackage(name string, version string, status string, repo_name string) {
+	installed_packages := GetInstalledPackages()
+	new_package := InstalledPackage{
+		Name: name,
+		Version: version,
+		Status: status,
+		Repository: repo_name,
+	}
+	installed_packages = append(installed_packages, new_package)
+	SaveInstalledPackages(installed_packages)
 }
 
 func SaveInstalledPackages(installed_packages []InstalledPackage) {

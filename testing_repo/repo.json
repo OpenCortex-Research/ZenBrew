@@ -1,0 +1,11 @@
+{
+	"name": "ZenBrew Test Repo",
+	"format": "V1",
+	"packages": [
+		{
+			"name": "Test",
+			"id": "test",
+			"location": "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/develop/repo/test.json"
+		}
+	]
+}

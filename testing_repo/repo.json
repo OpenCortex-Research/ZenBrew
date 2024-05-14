@@ -4,7 +4,7 @@
 	"packages": [
 		{
 			"name": "test",
-			"location": "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/test.json"
+			"url": "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/test.json"
 		}
 	]
 }

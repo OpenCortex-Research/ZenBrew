@@ -3,8 +3,7 @@
 	"format": "array",
 	"packages": [
 		{
-			"name": "Test",
-			"id": "test",
+			"name": "test",
 			"location": "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/test.json"
 		}
 	]

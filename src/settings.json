@@ -2,6 +2,6 @@
     "cleanup": true,
     "dir": "/Users/judahfuller/Library/CloudStorage/Dropbox/Projects/ZenBrew/test",
     "repos": [
-        "https://raw.githubusercontent.com/OpenCortex-Research/zenBrewRepo/develop/repo/"
+        "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/"
     ]
 }

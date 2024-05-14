@@ -1,6 +1,6 @@
 {
 	"name": "ZenBrew Test Repo",
-	"format": "V1",
+	"format": "array",
 	"packages": [
 		{
 			"name": "Test",

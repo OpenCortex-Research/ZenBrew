@@ -9,6 +9,7 @@ package repo
 
 import (
 	"encoding/json"
+	"errors"
 	log "log/slog"
 	"net/http"
 
@@ -46,14 +47,14 @@ func DownloadRepoJson(repo_url string) Repo {
 	return repo
 }
 
-func (repo Repo) CheckPackage(package_name string) bool {
+func (repo Repo) CheckPackage(package_name string) (string, error) {
 	if repo.Format == "array" {
 		if repo.Packages == nil {
-			return false
+			return "", errors.New("No packages in the repo")
 		}
 		for _, package_link := range repo.Packages {
 			if package_link.Name == package_name {
-				return true
+				return package_link.URL, nil
 			}
 		}
 	}
@@ -62,13 +63,13 @@ func (repo Repo) CheckPackage(package_name string) bool {
 		resp, err := http.Head(packageURL)
 		if err != nil {
 			log.Error("Failed to check package existence:", err)
-			return false
+			return "", errors.New("Failed to check package existence")
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode == http.StatusOK {
-			return true
+			return packageURL, nil
 		}
 	}
-	return false
+	return "", errors.New("Package not found")
 }

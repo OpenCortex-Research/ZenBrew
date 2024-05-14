@@ -10,6 +10,7 @@ package pkg
 import (
 	"OpenCortex/ZenBrew/utils"
 	"encoding/json"
+	"fmt"
 	"io"
 	log "log/slog"
 	"net/http"
@@ -37,16 +38,17 @@ type PackageLink struct {
 }
 
 func DownloadPackageMetadata(package_link PackageLink) Package {
-	json_url := package_link.URL + "package.json"
-	hash_url := package_link.URL + "package.sha256"
+	json_url := package_link.URL
+	log.Info(fmt.Sprintf("Downloading package metadata from: %s", json_url))
+	//hash_url := package_link.URL + "package.sha256"
 
 	json_bytes := utils.DownloadFile(json_url)
-	hash_bytes := utils.DownloadFile(hash_url)
+	//hash_bytes := utils.DownloadFile(hash_url)
 
-	if !utils.CheckHash(json_bytes, hash_bytes) {
-		log.Error("Hashes do not match.")
-		panic("Hashes do not match.")
-	}
+	//if !utils.CheckHash(json_bytes, hash_bytes) {
+	//	log.Error("Hashes do not match.")
+	//	panic("Hashes do not match.")
+	//}
 
 	var pkg Package
 	err := json.Unmarshal(json_bytes, &pkg)

@@ -33,41 +33,53 @@ var install_cmd = &cobra.Command{
 	// has an action associated with it:
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+
+		// Setup install
+		pkg_to_install := args[0]
+		version := ""
+
+		log.Info("Getting the current state of ZenBrew")
 		utils.GetSettings()
 		repos_links := utils.Preferences.Repos
 		var repos []repo.Repo
+
+		// Check if the package is already installed
+		installed, installedVer := utils.CheckIfPackageInstalled(pkg_to_install)
+		if installed {
+			log.Info("Package already installed")
+			fmt.Printf("Already installed at version: %s", installedVer)
+			fmt.Println("To upgrade the package, use the upgrade command")
+			fmt.Println("To reinstall the package, use the reinstall command")
+			os.Exit(0)
+		}
+
+		log.Info("Downloading repos")
 		for _, repo_url := range repos_links {
 			repo.DownloadRepoJson(repo_url)
 			repos = append(repos, repo.DownloadRepoJson(repo_url))
 		}
-		var possible_packages []pkg.PackageLink
+
+		log.Info("Checking if the package is available in the repos")
+		var package_link pkg.PackageLink
+		var usedRepo repo.Repo
 		for _, repo := range repos {
-			if repo.CheckPackage(args[0]) {
-				package_link_url := repo.URL + "/packages/" + args[0]
+			if repo.CheckPackage(pkg_to_install) {
+				usedRepo = repo
+				package_link_url := repo.URL + "/packages/" + pkg_to_install
 				package_link_file := utils.DownloadFile(package_link_url)
-				var package_link pkg.PackageLink
 				err := json.Unmarshal(package_link_file, &package_link)
 				if err != nil {
 					log.Error("Failed to unmarshal JSON:", err)
 					panic("Failed to unmarshal JSON")
 				}
-				possible_packages = append(possible_packages, package_link)
+				break
 			}
-		}
-		var selection int = 0
-		if len(possible_packages) >= 0 {
-			log.Info("Multiple repos contain the package")
-			i := 0
-			for _, temp_package := range possible_packages {
-				log.Info(fmt.Sprintf("%d: %s - %s", i, temp_package.Name, temp_package.URL))
-			}
-			log.Info("Please select a package to install: ")
-			fmt.Scanln(&selection)
 		}
 		log.Info("Installing package")
-		selected_package := pkg.DownloadPackageMetadata(possible_packages[selection])
-		selected_package.Download()
+		selected_package := pkg.DownloadPackageMetadata(package_link)
+		selected_package.Download(version)
 		selected_package.Install()
+		utils.AddInstalledPackage(pkg_to_install, selected_package.Latest, "installed", usedRepo.Name)
 	},
 }
 
@@ -90,13 +102,5 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ZenBrew.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	root_cmd.AddCommand(ping_cmd)
+	root_cmd.AddCommand(install_cmd)
 }

@@ -26,15 +26,15 @@ type Repo struct {
 
 func DownloadRepoJson(repo_url string) Repo {
 	json_url := repo_url + "repo.json"
-	hash_url := repo_url + "repo.sha256"
+	//hash_url := repo_url + "repo.sha256"
 
 	json_bytes := utils.DownloadFile(json_url)
-	hash_bytes := utils.DownloadFile(hash_url)
+	//hash_bytes := utils.DownloadFile(hash_url)
 
-	if !utils.CheckHash(json_bytes, hash_bytes) {
-		log.Error("Hashes do not match.")
-		panic("Hashes do not match.")
-	}
+	//if !utils.CheckHash(json_bytes, hash_bytes) {
+	//	log.Error("Hashes do not match.")
+	//	panic("Hashes do not match.")
+	//}
 
 	var repo Repo
 	err := json.Unmarshal(json_bytes, &repo)

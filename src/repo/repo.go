@@ -12,6 +12,7 @@ import (
 	"errors"
 	log "log/slog"
 	"net/http"
+	"strings"
 
 	"OpenCortex/ZenBrew/pkg"
 	"OpenCortex/ZenBrew/utils"
@@ -50,10 +51,10 @@ func DownloadRepoJson(repo_url string) Repo {
 func (repo Repo) CheckPackage(package_name string) (string, error) {
 	if repo.Format == "array" {
 		if repo.Packages == nil {
-			return "", errors.New("No packages in the repo")
+			return "", errors.New("no packages in the repo")
 		}
 		for _, package_link := range repo.Packages {
-			if package_link.Name == package_name {
+			if strings.EqualFold(package_link.Name, package_name) {
 				return package_link.URL, nil
 			}
 		}
@@ -63,7 +64,7 @@ func (repo Repo) CheckPackage(package_name string) (string, error) {
 		resp, err := http.Head(packageURL)
 		if err != nil {
 			log.Error("Failed to check package existence:", err)
-			return "", errors.New("Failed to check package existence")
+			return "", errors.New("failed to check package existence")
 		}
 		defer resp.Body.Close()
 
@@ -71,5 +72,5 @@ func (repo Repo) CheckPackage(package_name string) (string, error) {
 			return packageURL, nil
 		}
 	}
-	return "", errors.New("Package not found")
+	return "", errors.New("package not found")
 }

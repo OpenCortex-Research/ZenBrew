@@ -33,8 +33,8 @@ type PackageVersion struct {
 }
 
 type PackageLink struct {
-	Name string
-	URL  string
+	Name string `json:"name"`
+	URL  string `json:"url"`
 }
 
 func DownloadPackageMetadata(package_link PackageLink) Package {
@@ -117,10 +117,10 @@ func (pkg Package) Install() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Run the install file as a subprocess
-	cmd := exec.Command(package_path, "install")
-	err := cmd.Run()
-	if err != nil {
-		log.Error("Failed to run install file:", err)
+	cmd := exec.Command(fmt.Sprintf("%s/install", package_path))
+	cmd_err := cmd.Run()
+	if cmd_err != nil {
+		log.Error(fmt.Sprintf("Failed to run install file: %s", cmd_err))
 		panic("Failed to run install file")
 	}
 }

@@ -16,7 +16,9 @@ import (
 	log "log/slog"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
+	"strings"
 )
 
 func CheckHash(file []byte, hash []byte) bool {
@@ -36,7 +38,7 @@ func CheckHash(file []byte, hash []byte) bool {
 }
 
 func DownloadFile(raw_url string) ([]byte) {
-
+	log.Info(fmt.Sprintf("Downloading file from: %s", raw_url))
 	// Download the file
 	resp, err := http.Get(raw_url)
 	if err != nil {
@@ -51,7 +53,6 @@ func DownloadFile(raw_url string) ([]byte) {
 		log.Error(err.Error())
 		panic(err)
 	}
-
 	return bytes
 }
 
@@ -76,6 +77,7 @@ func ExtractTar(src, dest string) error {
 	// Create a tar reader for the gzip reader
 	tar_reader := tar.NewReader(gz_reader)
 
+	var file_names []string
 	// Iterate through each file in the tar archive
 	for {
 		// Read the next file header
@@ -85,6 +87,10 @@ func ExtractTar(src, dest string) error {
 		}
 		if err != nil {
 			return err
+		}
+
+		if (header.Name != "pax_global_header") && (strings.Split(header.Name, "/")[1] != "") {
+			file_names = append(file_names, header.Name)
 		}
 
 		// Get the file path for the current file
@@ -120,5 +126,21 @@ func ExtractTar(src, dest string) error {
 		return err
 	}
 
+	for _, file_name := range file_names {
+		cmd_err := exec.Command("mv", path.Join(dest, file_name), path.Join(dest)).Run()
+		if cmd_err != nil {
+			log.Error(fmt.Sprintf("Failed to run mv: %s", cmd_err))
+			panic("Failed to run mv")
+		}
+
+		arr := strings.Split(file_name, "/")
+		new_name := strings.Join(arr[1:], "/")
+
+		ch_err := exec.Command("chmod", "+x", path.Join(dest, new_name)).Run()
+		if ch_err != nil {
+			log.Error(fmt.Sprintf("Failed to run chmod: %s", ch_err))
+			panic("Failed to run chmod")
+		}
+	}
 	return nil
 }

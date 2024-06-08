@@ -55,31 +55,28 @@ var install_cmd = &cobra.Command{
 
 		log.Info("Downloading repos")
 		for _, repo_url := range repos_links {
-			repo.DownloadRepoJson(repo_url)
 			repos = append(repos, repo.DownloadRepoJson(repo_url))
 		}
 
 		log.Info("Checking if the package is available in the repos")
-		var package_link pkg.PackageLink
+		var selected_package pkg.Package
 		var usedRepo repo.Repo
 		for _, repo := range repos {
-			package_link_url, err := repo.CheckPackage(pkg_to_install) 
+			package_link_url, err := repo.CheckPackage(pkg_to_install)
 			if err != nil {
 				log.Error("Failed to check package in repo:", err)
 			}
 			usedRepo = repo
 			package_link_file := utils.DownloadFile(package_link_url)
-			json_err := json.Unmarshal(package_link_file, &package_link)
+			json_err := json.Unmarshal(package_link_file, &selected_package)
 			if json_err != nil {
 				log.Error("Failed to unmarshal JSON:", json_err)
 				panic("Failed to unmarshal JSON")
 			}
-			fmt.Println(package_link.URL)
+			fmt.Println(selected_package.Versions[0].URL)
 			break
 		}
 		log.Info("Installing package")
-		fmt.Println(package_link.URL)
-		selected_package := pkg.DownloadPackageMetadata(package_link)
 		selected_package.Download(version)
 		selected_package.Install()
 		utils.AddInstalledPackage(pkg_to_install, selected_package.Latest, "installed", usedRepo.Name)

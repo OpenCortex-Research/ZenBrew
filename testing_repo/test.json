@@ -3,7 +3,7 @@
 	"format": "package_v1",
 	"description": "Test package",
 	"maintainer": "Judah",
-	"latest": "0.0.4",
+	"latest": "1.0.0",
 	"versions": [
 		{
 			"version": "0.0.1",
@@ -20,6 +20,10 @@
 		{
 			"version": "0.0.4",
 			"url": "https://github.com/OpenCortex-Research/zb_test/archive/refs/tags/v0.0.4.tar.gz"
+		},
+		{
+			"version": "1.0.0",
+			"url": "https://github.com/OpenCortex-Research/zb_test/archive/refs/tags/v1.0.0.tar.gz"
 		}
 	]
 }

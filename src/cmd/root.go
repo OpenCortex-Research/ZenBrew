@@ -65,15 +65,16 @@ var install_cmd = &cobra.Command{
 			package_link_url, err := repo.CheckPackage(pkg_to_install)
 			if err != nil {
 				log.Error("Failed to check package in repo:", err)
+			} else {
+				usedRepo = repo
+				package_link_file := utils.DownloadFile(package_link_url)
+				json_err := json.Unmarshal(package_link_file, &selected_package)
+				if json_err != nil {
+					log.Error("Failed to unmarshal JSON:", json_err)
+					panic("Failed to unmarshal JSON")
+				}
+				break
 			}
-			usedRepo = repo
-			package_link_file := utils.DownloadFile(package_link_url)
-			json_err := json.Unmarshal(package_link_file, &selected_package)
-			if json_err != nil {
-				log.Error("Failed to unmarshal JSON:", json_err)
-				panic("Failed to unmarshal JSON")
-			}
-			break
 		}
 		log.Info("Installing package")
 		selected_package.Download(version)

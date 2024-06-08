@@ -29,16 +29,16 @@ func CheckHash(file []byte, hash []byte) bool {
 	hash_from_file = hash_from_file[:len(hash_from_file)-1] // Remove newline character
 
 	if string(hash) == hash_from_file {
-		log.Info("File and hash file match.")
+		log.Debug("File and hash file match.")
 		return true
 	} else {
-		log.Info("File and hash file do not match.")
+		log.Debug("File and hash file do not match.")
 		return false
 	}
 }
 
 func DownloadFile(raw_url string) ([]byte) {
-	log.Info(fmt.Sprintf("Downloading file from: %s", raw_url))
+	log.Debug(fmt.Sprintf("Downloading file from: %s", raw_url))
 	// Download the file
 	resp, err := http.Get(raw_url)
 	if err != nil {
@@ -125,6 +125,8 @@ func ExtractTar(src, dest string) error {
 	if err != nil {
 		return err
 	}
+	
+	log.Debug(fmt.Sprintf("Moving files to %s", dest))
 
 	for _, file_name := range file_names {
 		cmd_err := exec.Command("mv", path.Join(dest, file_name), path.Join(dest)).Run()
@@ -136,11 +138,21 @@ func ExtractTar(src, dest string) error {
 		arr := strings.Split(file_name, "/")
 		new_name := strings.Join(arr[1:], "/")
 
+		log.Debug(fmt.Sprintf("Changing permissions for %s", path.Join(dest)))
 		ch_err := exec.Command("chmod", "+x", path.Join(dest, new_name)).Run()
 		if ch_err != nil {
 			log.Error(fmt.Sprintf("Failed to run chmod: %s", ch_err))
 			panic("Failed to run chmod")
 		}
 	}
+
+	folder_name := strings.Split(file_names[0], "/")[0]
+	log.Debug(fmt.Sprintf("Removing %s", path.Join(dest, folder_name)))
+	rm_err := exec.Command("rm", "-r", path.Join(dest, folder_name)).Run()
+	if rm_err != nil {
+		log.Error(fmt.Sprintf("Failed to run rm: %s", rm_err))
+		panic("Failed to run rm")
+	}
+
 	return nil
 }

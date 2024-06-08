@@ -117,6 +117,7 @@ func (pkg Package) Install() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Run the install file as a subprocess
+	log.Info(fmt.Sprintf("Running install file for package: %s", pkg.Name))
 	cmd := exec.Command(fmt.Sprintf("%s/install", package_path))
 	cmd_err := cmd.Run()
 	if cmd_err != nil {
@@ -125,11 +126,12 @@ func (pkg Package) Install() {
 	}
 }
 
-func (pkg Package) uninstall() {
+func (pkg Package) Uninstall() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Run the install file as a subprocess
-	cmd := exec.Command(package_path, "uninstall")
+	log.Info(fmt.Sprintf("Running uninstall file for package: %s", pkg.Name))
+	cmd := exec.Command(fmt.Sprintf("%s/uninstall", package_path))
 	err := cmd.Run()
 	if err != nil {
 		log.Error("Failed to run install file:", err)
@@ -142,7 +144,8 @@ func (pkg Package) Update() {
 	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
 
 	// Run the install file as a subprocess
-	cmd := exec.Command(package_path, "update")
+	log.Info(fmt.Sprintf("Running update file for package: %s", pkg.Name))
+	cmd := exec.Command(fmt.Sprintf("%s/update", package_path))
 	err := cmd.Run()
 	if err != nil {
 		log.Error("Failed to run install file:", err)

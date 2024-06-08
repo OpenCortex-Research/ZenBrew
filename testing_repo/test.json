@@ -3,7 +3,7 @@
 	"format": "package_v1",
 	"description": "Test package",
 	"maintainer": "Judah",
-	"latest": "0.0.3",
+	"latest": "0.0.4",
 	"versions": [
 		{
 			"version": "0.0.1",

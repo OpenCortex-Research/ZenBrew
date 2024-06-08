@@ -16,6 +16,10 @@
 		{
 			"version": "0.0.3",
 			"url": "https://github.com/OpenCortex-Research/zb_test/archive/refs/tags/v0.0.3.tar.gz"
+		},
+		{
+			"version": "0.0.4",
+			"url": "https://github.com/OpenCortex-Research/zb_test/archive/refs/tags/v0.0.4.tar.gz"
 		}
 	]
 }

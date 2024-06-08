@@ -47,9 +47,9 @@ var install_cmd = &cobra.Command{
 		installed, installedVer := utils.CheckIfPackageInstalled(pkg_to_install)
 		if installed {
 			log.Info("Package already installed")
-			fmt.Printf("Already installed at version: %s", installedVer)
-			fmt.Println("To upgrade the package, use the upgrade command")
-			fmt.Println("To reinstall the package, use the reinstall command")
+			log.Info(fmt.Sprintf("Already installed at version: %s", installedVer))
+			log.Info("To upgrade the package, use the upgrade command")
+			log.Info("To reinstall the package, use the reinstall command")
 			os.Exit(0)
 		}
 
@@ -73,7 +73,6 @@ var install_cmd = &cobra.Command{
 				log.Error("Failed to unmarshal JSON:", json_err)
 				panic("Failed to unmarshal JSON")
 			}
-			fmt.Println(selected_package.Versions[0].URL)
 			break
 		}
 		log.Info("Installing package")
@@ -86,13 +85,14 @@ var install_cmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	fmt.Println(`    ____                   ______           __             `)
-	fmt.Println(`   / __ \____  ___  ____  / ____/___  _____/ /____  _  __  `)
-	fmt.Println(`  / / / / __ \/ _ \/ __ \/ /   / __ \/ ___/ __/ _ \| |/_/  `)
-	fmt.Println(` / /_/ / /_/ /  __/ / / / /___/ /_/ / /  / /_/  __/>  <    `)
-	fmt.Println(` \____/ .___/\___/_/ /_/\____/\____/_/   \__/\___/_/|_|    `)
-	fmt.Println(`     /_/                       ZenBrew Package Manager `)
-	fmt.Println(` `)
+	fmt.Println(`  ______          ____                    `)
+	fmt.Println(` |___  /         |  _ \                   `)
+	fmt.Println(`    / / ___ _ __ | |_) |_ __ _____      __`)
+	fmt.Println(`   / / / _ \ '_ \|  _ <| '__/ _ \ \ /\ / /`)
+	fmt.Println(`  / /_|  __/ | | | |_) | | |  __/\ V  V / `)
+	fmt.Println(` /_____\___|_| |_|____/|_|  \___| \_/\_/  `)
+	fmt.Println(`               QuadCortex Package Manager `)
+	fmt.Println(`                          From OpenCortex `)
 	utils.Lock()
 	err := root_cmd.Execute()
 	utils.Unlock()

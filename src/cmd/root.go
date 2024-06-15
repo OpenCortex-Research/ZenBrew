@@ -31,7 +31,7 @@ var install_cmd = &cobra.Command{
 	Long:  `Install a package`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	Args: cobra.ExactArgs(1),
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		// Setup install
@@ -77,9 +77,139 @@ var install_cmd = &cobra.Command{
 			}
 		}
 		log.Info("Installing package")
-		selected_package.Download(version)
+		ver_index := selected_package.Download(version)
 		selected_package.Install()
-		utils.AddInstalledPackage(pkg_to_install, selected_package.Latest, "installed", usedRepo.Name)
+		var installed_package utils.Package
+		installed_package.Name = selected_package.Name
+		installed_package.Format = selected_package.Format
+		installed_package.Maintainer = selected_package.Maintainer
+		installed_package.Versions = selected_package.Versions
+		installed_package.Latest = selected_package.Latest
+		utils.AddInstalledPackage(installed_package, "installed", usedRepo.Name, ver_index)
+	},
+}
+
+var uninstall_cmd = &cobra.Command{
+	Use:   "uninstall package_name",
+	Short: "Uninstall a package",
+	Long:  `Uninstall a package`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		// Setup install
+		pkg_to_uninstall := args[0]
+
+		log.Info("Getting the current state of ZenBrew")
+		utils.GetSettings()
+
+		// Check if the package is already installed
+		installed, _ := utils.CheckIfPackageInstalled(pkg_to_uninstall)
+		if !installed {
+			log.Info("Package is not already installed")
+			log.Info("To install the package, use the install command")
+			os.Exit(0)
+		}
+
+		installed_packages := utils.GetInstalledPackages()
+		var selected_package pkg.Package
+		var uninstall_package pkg.InstalledPackage
+		for _, installed_package := range installed_packages {
+			if installed_package.Name == pkg_to_uninstall {
+				uninstall_package.Name = installed_package.Name
+				uninstall_package.Format = installed_package.Format
+				uninstall_package.Maintainer = installed_package.Maintainer
+				uninstall_package.Version = installed_package.Version
+				uninstall_package.Status = installed_package.Status
+				uninstall_package.Repository = installed_package.Repository
+				selected_package = pkg.FromInstalled(uninstall_package)
+			}
+		}
+
+		log.Info("Uninstalling package")
+		selected_package.Uninstall()
+		utils.RemoveInstalledPackage(uninstall_package.Name, uninstall_package.Repository)
+	},
+}
+
+var update_cmd = &cobra.Command{
+	Use:   "update package_name",
+	Short: "Update a package",
+	Long:  `Update a package`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	Args: cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		// Setup update
+		pkg_to_update := args[0]
+		version := ""
+
+		log.Info("Getting the current state of ZenBrew")
+		utils.GetSettings()
+		repos_links := utils.Preferences.Repos
+		var repos []repo.Repo
+
+		// Check if the package is already installed
+		installed, installedVer := utils.CheckIfPackageInstalled(pkg_to_update)
+		if !installed {
+			log.Info("Package is not already installed")
+			log.Info("To install the package, use the install command")
+			os.Exit(0)
+		}
+
+		log.Info("Downloading repos")
+		for _, repo_url := range repos_links {
+			repos = append(repos, repo.DownloadRepoJson(repo_url))
+		}
+
+		log.Info("Checking if the package is available in the repos")
+		var selected_package pkg.Package
+		var usedRepo repo.Repo
+		for _, repo := range repos {
+			package_link_url, err := repo.CheckPackage(pkg_to_update)
+			if err != nil {
+				log.Error("Failed to check package in repo:", err)
+			} else {
+				usedRepo = repo
+				package_link_file := utils.DownloadFile(package_link_url)
+				json_err := json.Unmarshal(package_link_file, &selected_package)
+				if json_err != nil {
+					log.Error("Failed to unmarshal JSON:", json_err)
+					panic("Failed to unmarshal JSON")
+				}
+				break
+			}
+		}
+
+		if selected_package.Latest == installedVer {
+			log.Info("Package is already up to date")
+			os.Exit(0)
+		}
+
+		log.Info("Updating package")
+		ver_index := selected_package.Download(version)
+		selected_package.Install()
+		var update_package utils.Package
+		update_package.Name = selected_package.Name
+		update_package.Format = selected_package.Format
+		update_package.Maintainer = selected_package.Maintainer
+		update_package.Versions = selected_package.Versions
+		update_package.Latest = selected_package.Latest
+		utils.SetPackageStatus(update_package, "installed", ver_index, usedRepo.Name)
+	},
+}
+
+var reinstall_cmd = &cobra.Command{
+	Use:   "reinstall package_name",
+	Short: "Reinstall a package",
+	Long:  `Reinstall a package`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	Args: cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		log.Error("Not implemented.")
+		log.Error("Please use the uninstall command to uninstall the package, then the install command to reinstall it.")
+		os.Exit(1)
 	},
 }
 
@@ -104,4 +234,7 @@ func Execute() {
 
 func init() {
 	root_cmd.AddCommand(install_cmd)
+	root_cmd.AddCommand(uninstall_cmd)
+	root_cmd.AddCommand(reinstall_cmd)
+	root_cmd.AddCommand(update_cmd)
 }

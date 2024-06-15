@@ -8,16 +8,22 @@
 package utils
 
 import (
+	zb_types "OpenCortex/ZenBrew/types"
 	"encoding/json"
 	log "log/slog"
 	"os"
 )
 
+type Package struct {
+	zb_types.Package
+}
+
+type PackageLink struct {
+	zb_types.PackageLink
+}
+
 type InstalledPackage struct {
-	Name    string `json:"name"`
-	Version	string `json:"version"`
-	Status	string `json:"status"`
-	Repository	string `json:"repository"`
+	zb_types.InstalledPackage
 }
 
 func GetInstalledPackages() []InstalledPackage {
@@ -48,20 +54,21 @@ func CheckIfPackageInstalled(name string) (bool, string) {
 	}
 	for _, installed_package := range installed_packages {
 		if installed_package.Name == name {
-			return true, installed_package.Version
+			return true, installed_package.Version.Version
 		}
 	}
 	return false, ""
 }
 
-func AddInstalledPackage(name string, version string, status string, repo_name string) {
+func AddInstalledPackage(installed_package Package, status string, repo_name string, version_index int) {
 	installed_packages := GetInstalledPackages()
-	new_package := InstalledPackage{
-		Name: name,
-		Version: version,
-		Status: status,
-		Repository: repo_name,
-	}
+	new_package := InstalledPackage{}
+	new_package.Name = installed_package.Name
+	new_package.Version = installed_package.Versions[version_index]
+	new_package.Format = installed_package.Format
+	new_package.Maintainer = installed_package.Maintainer
+	new_package.Status = status
+	new_package.Repository = repo_name
 	installed_packages = append(installed_packages, new_package)
 	SaveInstalledPackages(installed_packages)
 }
@@ -82,24 +89,36 @@ func SaveInstalledPackages(installed_packages []InstalledPackage) {
 	}
 }
 
-func SetPackageStatus(name string, repo string, version string, status string) {
+func SetPackageStatus(updated_package Package, status string, version_index int, repo_name string) {
 	installed_packages := GetInstalledPackages()
 	found := false
 	for i, installed_package := range installed_packages {
-		if installed_package.Name == name && installed_package.Repository == repo {
+		if installed_package.Name == updated_package.Name && installed_package.Repository == repo_name {
 			found = true
-			installed_packages[i].Version = version
+			installed_packages[i].Version = updated_package.Versions[version_index]
 			installed_packages[i].Status = status
 		}
 	}
 	if !found {
-		new_package := InstalledPackage{
-			Name: name,
-			Version: version,
-			Status: status,
-			Repository: repo,
-		}
+		new_package := InstalledPackage{}
+		new_package.Name = updated_package.Name
+		new_package.Version = updated_package.Versions[version_index]
+		new_package.Format = updated_package.Format
+		new_package.Maintainer = updated_package.Maintainer
+		new_package.Status = status
+		new_package.Repository = repo_name
 		installed_packages = append(installed_packages, new_package)
+	}
+	SaveInstalledPackages(installed_packages)
+}
+
+func RemoveInstalledPackage(name string, repo_name string) {
+	installed_packages := GetInstalledPackages()
+	for i, p := range installed_packages {
+		if p.Name == name && p.Repository == repo_name {
+			installed_packages = append(installed_packages[:i], installed_packages[i+1:]...)
+			break
+		}
 	}
 	SaveInstalledPackages(installed_packages)
 }

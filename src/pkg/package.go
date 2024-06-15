@@ -8,6 +8,7 @@
 package pkg
 
 import (
+	zb_types "OpenCortex/ZenBrew/types"
 	"OpenCortex/ZenBrew/utils"
 	"encoding/json"
 	"fmt"
@@ -20,21 +21,25 @@ import (
 )
 
 type Package struct {
-	Name       string         `json:"name"`
-	Format     string         `json:"format"`
-	Maintainer string         `json:"maintainer"`
-	Versions   []PackageVersion `json:"versions"`
-	Latest     string         `json:"latest"`
-}
-
-type PackageVersion struct {
-	Version string `json:"version"`
-	URL     string `json:"url"`
+	zb_types.Package
 }
 
 type PackageLink struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	zb_types.PackageLink
+}
+
+type InstalledPackage struct {
+	zb_types.InstalledPackage
+}
+
+func FromInstalled(installed_package InstalledPackage) Package {
+	var pkg Package
+	pkg.Name = installed_package.Name
+	pkg.Latest = ""
+	pkg.Format = installed_package.Format
+	pkg.Maintainer = installed_package.Maintainer
+	pkg.Versions = append(pkg.Versions, installed_package.Version)
+	return pkg
 }
 
 func DownloadPackageMetadata(package_link PackageLink) Package {
@@ -60,7 +65,7 @@ func DownloadPackageMetadata(package_link PackageLink) Package {
 	return pkg
 }
 
-func (pkg Package) Download(version string) {
+func (pkg Package) Download(version string) int {
 	if version == "" || version == "latest" {
 		version = pkg.Latest
 	}
@@ -111,6 +116,8 @@ func (pkg Package) Download(version string) {
 		log.Error("Failed to extract package:", err)
 		panic("Failed to extract package")
 	}
+
+	return version_int
 }
 
 func (pkg Package) Install() {

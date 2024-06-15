@@ -16,6 +16,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var debug bool
+
 // rootCmd represents the base command when called without any subcommands
 var root_cmd = &cobra.Command{
 	Use:   "ZenBrew",
@@ -33,6 +35,9 @@ var install_cmd = &cobra.Command{
 	// has an action associated with it:
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		if debug {
+			log.SetLogLoggerLevel(log.LevelDebug)
+		}
 
 		// Setup install
 		pkg_to_install := args[0]
@@ -97,6 +102,9 @@ var uninstall_cmd = &cobra.Command{
 	// has an action associated with it:
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		if debug {
+			log.SetLogLoggerLevel(log.LevelDebug)
+		}
 		// Setup install
 		pkg_to_uninstall := args[0]
 
@@ -140,6 +148,9 @@ var update_cmd = &cobra.Command{
 	// has an action associated with it:
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		if debug {
+			log.SetLogLoggerLevel(log.LevelDebug)
+		}
 		// Setup update
 		pkg_to_update := args[0]
 		version := ""
@@ -207,6 +218,9 @@ var reinstall_cmd = &cobra.Command{
 	// has an action associated with it:
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		if debug {
+			log.SetLogLoggerLevel(log.LevelDebug)
+		}
 		log.Error("Not implemented.")
 		log.Error("Please use the uninstall command to uninstall the package, then the install command to reinstall it.")
 		os.Exit(1)
@@ -237,4 +251,5 @@ func init() {
 	root_cmd.AddCommand(uninstall_cmd)
 	root_cmd.AddCommand(reinstall_cmd)
 	root_cmd.AddCommand(update_cmd)
+	root_cmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode")
 }

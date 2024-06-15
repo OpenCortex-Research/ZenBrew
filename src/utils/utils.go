@@ -129,6 +129,7 @@ func ExtractTar(src, dest string) error {
 	log.Debug(fmt.Sprintf("Moving files to %s", dest))
 
 	for _, file_name := range file_names {
+		log.Debug(fmt.Sprintf("Moving file %s", file_name))
 		cmd_err := exec.Command("mv", path.Join(dest, file_name), path.Join(dest)).Run()
 		if cmd_err != nil {
 			log.Error(fmt.Sprintf("Failed to run mv: %s", cmd_err))

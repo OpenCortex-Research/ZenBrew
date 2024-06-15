@@ -134,3 +134,5 @@ dmypy.json
 .pyre/
 
 test/zenbrew/
+src/settings.json
+src/installed_packages.json

@@ -20,9 +20,9 @@ type Settings struct {
 
 var Preferences Settings
 
-func GetSettings() {
+func GetSettings(zenbrew_dir string) {
 	// Read the JSON file
-	file, err := os.ReadFile("settings.json")
+	file, err := os.ReadFile(zenbrew_dir + "settings.json")
 	if err != nil {
 		log.Error(err.Error())
 		panic(err)

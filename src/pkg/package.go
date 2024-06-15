@@ -77,7 +77,7 @@ func (pkg Package) Download(version string) int {
 		}
 	}
 	package_url := pkg.Versions[version_int].URL
-	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "ZenBrew", pkg.Name)
 
 	// Download the package
 	resp, err := http.Get(package_url)
@@ -121,7 +121,7 @@ func (pkg Package) Download(version string) int {
 }
 
 func (pkg Package) Install() {
-	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "ZenBrew", pkg.Name)
 
 	// Run the install file as a subprocess
 	log.Info(fmt.Sprintf("Running install file for package: %s", pkg.Name))
@@ -134,7 +134,7 @@ func (pkg Package) Install() {
 }
 
 func (pkg Package) Uninstall() {
-	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "ZenBrew", pkg.Name)
 
 	// Run the install file as a subprocess
 	log.Info(fmt.Sprintf("Running uninstall file for package: %s", pkg.Name))
@@ -148,7 +148,7 @@ func (pkg Package) Uninstall() {
 }
 
 func (pkg Package) Update() {
-	package_path := path.Join(utils.Preferences.RootDir, "zenbrew", pkg.Name)
+	package_path := path.Join(utils.Preferences.RootDir, "ZenBrew", pkg.Name)
 
 	// Run the install file as a subprocess
 	log.Info(fmt.Sprintf("Running update file for package: %s", pkg.Name))

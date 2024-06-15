@@ -1,6 +1,6 @@
 {
     "cleanup": true,
-    "dir": "/Users/judahfuller/Library/CloudStorage/Dropbox/Projects/ZenBrew/test",
+    "dir": "/media/p4/OpenCortex/",
     "repos": [
         "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/"
     ]

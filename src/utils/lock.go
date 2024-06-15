@@ -18,12 +18,12 @@ func Lock() {
 	// Create a file
 	// If the file exists, wait
 	// If the file does not exist, create it
-	if _, err := os.Stat(Preferences.RootDir + "/zenbrew/zenbrew.lock"); err == nil {
+	if _, err := os.Stat(Preferences.RootDir + "/ZenBrew/ZenBrew.lock"); err == nil {
 		log.Error("ZenBrew is already running.")
 		panic("ZenBrew is already running.")
 	} else if os.IsNotExist(err) {
 		SafeLock = true
-		os.Create(Preferences.RootDir + "/zenbrew/zenbrew.lock")
+		os.Create(Preferences.RootDir + "/ZenBrew/ZenBrew.lock")
 	}
 }
 
@@ -33,8 +33,8 @@ func Unlock() {
 	if !SafeLock {
 		return
 	}
-	if _, err := os.Stat(Preferences.RootDir + "/zenbrew/zenbrew.lock"); err == nil {
-		os.Remove(Preferences.RootDir + "/zenbrew/zenbrew.lock")
+	if _, err := os.Stat(Preferences.RootDir + "/ZenBrew/ZenBrew.lock"); err == nil {
+		os.Remove(Preferences.RootDir + "/ZenBrew/ZenBrew.lock")
 	} else if os.IsNotExist(err) {
 		return
 	}

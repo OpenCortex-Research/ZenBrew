@@ -39,7 +39,7 @@ var install_cmd = &cobra.Command{
 		version := ""
 
 		log.Info("Getting the current state of ZenBrew")
-		utils.GetSettings()
+		utils.GetSettings("/media/p4/OpenCortex/ZenBrew/")
 		repos_links := utils.Preferences.Repos
 		var repos []repo.Repo
 
@@ -101,7 +101,7 @@ var uninstall_cmd = &cobra.Command{
 		pkg_to_uninstall := args[0]
 
 		log.Info("Getting the current state of ZenBrew")
-		utils.GetSettings()
+		utils.GetSettings("/media/p4/OpenCortex/ZenBrew/")
 
 		// Check if the package is already installed
 		installed, _ := utils.CheckIfPackageInstalled(pkg_to_uninstall)
@@ -145,7 +145,7 @@ var update_cmd = &cobra.Command{
 		version := ""
 
 		log.Info("Getting the current state of ZenBrew")
-		utils.GetSettings()
+		utils.GetSettings("/media/p4/OpenCortex/ZenBrew/")
 		repos_links := utils.Preferences.Repos
 		var repos []repo.Repo
 

@@ -1,0 +1,10 @@
+{
+	"name": "Test Repo",
+	"format": "array",
+	"packages": [
+		{
+			"name": "test",
+			"url": "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/test.json"
+		}
+	]
+}

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.vscode
 
 main.build
 main.dist
@@ -131,3 +132,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+test/zenbrew/
+src/settings.json
+src/installed_packages.json

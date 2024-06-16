@@ -1,0 +1,13 @@
+[
+	{
+		"name": "ZenBrew",
+		"format": "package_v1",
+		"maintainer": "Judah",
+		"version": {
+			"version": "0.0.0",
+			"url": "https://github.com/OpenCortex-Research/zb_test/archive/refs/tags/v1.0.1.tar.gz"
+		},
+		"status": "installed",
+		"repository": "OpenCortex"
+	}
+]

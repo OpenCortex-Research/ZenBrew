@@ -1,0 +1,7 @@
+{
+    "cleanup": true,
+    "dir": "/media/p4/OpenCortex/",
+    "repos": [
+        "https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/dev-go/testing_repo/"
+    ]
+}

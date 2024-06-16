@@ -5,19 +5,7 @@ Homebrew Package Manager for the Quad Cortex
 Install using:
 
 ```bash
-curl -s -L https://github.com/OpenCortex-Research/ZenBrew/raw/main/install.sh | sh
-```
-
-Update using:
-
-```bash
-curl -s -L https://github.com/OpenCortex-Research/ZenBrew/raw/main/update.sh | sh
-```
-
-Uninstall using:
-
-```bash
-curl -s -L https://github.com/OpenCortex-Research/ZenBrew/raw/main/uninstall.sh | sh
+curl -s -L https://raw.githubusercontent.com/OpenCortex-Research/ZenBrew/main/installer/get.sh | sh
 ```
 
 Or use ZenBrew to update itself

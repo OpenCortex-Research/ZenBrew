@@ -1,3 +1,4 @@
 #!/bin/sh
 cd /media/p4/OpenCortex/bin
-curl -O https://github.com/OpenCortex-Research/ZenBrew/archive/
+curl -O https://github.com/OpenCortex-Research/ZenBrew/releases/download/V1.0.0/zenbrew
+chmod +x /media/p4/OpenCortex/Bin/zenbrew

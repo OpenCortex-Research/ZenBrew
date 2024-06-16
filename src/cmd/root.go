@@ -210,10 +210,10 @@ var update_cmd = &cobra.Command{
 	},
 }
 
-var reinstall_cmd = &cobra.Command{
-	Use:   "reinstall package_name",
-	Short: "Reinstall a package",
-	Long:  `Reinstall a package`,
+var relink_cmd = &cobra.Command{
+	Use:   "relink package_name",
+	Short: "Relink a package",
+	Long:  `Relink a package`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Args: cobra.MaximumNArgs(1),
@@ -249,7 +249,7 @@ func Execute() {
 func init() {
 	root_cmd.AddCommand(install_cmd)
 	root_cmd.AddCommand(uninstall_cmd)
-	root_cmd.AddCommand(reinstall_cmd)
+	root_cmd.AddCommand(relink_cmd)
 	root_cmd.AddCommand(update_cmd)
 	root_cmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode")
 }

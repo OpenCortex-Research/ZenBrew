@@ -1,0 +1,4 @@
+#!/bin/sh
+rm -r /media/p4/OpenCortex/ZenBrew
+cd /media/p4/OpenCortex/bin
+rm -r zenbrew

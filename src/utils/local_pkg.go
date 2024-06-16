@@ -28,7 +28,7 @@ type InstalledPackage struct {
 
 func GetInstalledPackages() []InstalledPackage {
 	// Read the JSON file
-	file, err := os.ReadFile("installed_packages.json")
+	file, err := os.ReadFile(Preferences.RootDir + "installed_packages.json")
 	if os.IsNotExist(err) {
 		return []InstalledPackage{}
 	} else if err != nil {
@@ -82,7 +82,7 @@ func SaveInstalledPackages(installed_packages []InstalledPackage) {
 	}
 
 	// Write the JSON data to the file
-	err = os.WriteFile("installed_packages.json", json_data, 0644)
+	err = os.WriteFile(Preferences.RootDir + "installed_packages.json", json_data, 0644)
 	if err != nil {
 		log.Error(err.Error())
 		panic(err)

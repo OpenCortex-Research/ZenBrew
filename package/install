@@ -1,0 +1,3 @@
+#!/bin/sh
+cd
+echo "export PATH=/media/p4/OpenCortex/bin:$PATH" >> .profile

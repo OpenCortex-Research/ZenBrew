@@ -9,7 +9,7 @@ readonly URI="https://github.com/OpenCortex-Research/ZenBrew/releases/download/V
 readonly curlbin="/bin/wget"
 
 test -x ${curlbin} || {
-	echo "ERROR: unable t oexecute ${curlbin}"
+	echo "ERROR: unable to execute ${curlbin}"
 	exit 99
 }
 
@@ -28,7 +28,7 @@ chmod +x ${BINDNAME}/zenbrew && \
 cd ${BREWDNAME} && \
 ${curlbin} ${URI}/settings.json 2>/dev/null && \
 test -z settings.json && {
-	echo "ERROR: fiel size of settings.json is zero"
+	echo "ERROR: file size of settings.json is zero"
 	exit 99
 }
 
